@@ -1,4 +1,7 @@
-<?php
+// Load Environment configurations
+require('dotenv').config();
+
+/*
 	$user = $_POST['user_name'];
 	$userid = $_POST['user_id'];
 	$skills = $_POST['text'];
@@ -19,11 +22,6 @@
 	    die($msg);
 	    echo $msg;
 	}
-
-	$servername = "localhost";
-	$username = "REDACTED";
-	$password = "REDACTED";
-	$dbname = "REDACTED";
 
 
 	// Create connection
@@ -123,3 +121,4 @@
 
 	$conn->close();
  ?>
+*/

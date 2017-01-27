@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/Smona/skillzbot#readme",
   "dependencies": {
-    "dotenv": "^4.0.0"
+    "dotenv": "^4.0.0",
+    "sequelize": "^3.30.0"
   }
 }
