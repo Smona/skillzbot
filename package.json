@@ -1,0 +1,25 @@
+{
+  "name": "skillzbot",
+  "version": "0.0.1",
+  "description": "A bot that integrates with your Slack team and keeps track of who knows what.",
+  "main": "skillzbot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/Smona/skillzbot.git"
+  },
+  "keywords": [
+    "slack",
+    "chatbot",
+    "skills",
+    "team"
+  ],
+  "author": "Mason Bourgeois",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Smona/skillzbot/issues"
+  },
+  "homepage": "https://github.com/Smona/skillzbot#readme"
+}
