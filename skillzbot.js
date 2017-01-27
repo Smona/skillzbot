@@ -80,7 +80,7 @@ function iknow(user, newskills, callback) {
 				'Run /iknow followed by a space-separated list of skills you have.');
 		} else {
 				callback('*The things you\'re good at:*\n' +
-				user.skills.replace(' ', '\n') +
+				user.skills.replace(/ /g, '\n') +
 				'\n*Add more terms your comrades might search for;* don\'t miss an opportunity to support the Revolution!'); 
 		}
 	}
