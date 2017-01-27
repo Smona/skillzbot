@@ -5,27 +5,76 @@ var Sequelize = require('sequelize');
 // Load Environment configurations
 require('dotenv').config();
 
-http.createServer(function (request, response) {
-	var post = getPost(request, function(post) {
-		console.log('Request received\nUser: ' + post.user_name + '\nID: ' + post.user_id);
-	});
-   	// Send the HTTP header 
-	// HTTP Status: 200 : OK
-   	// Content Type: text/plain
-   	response.writeHead(200, {'Content-Type': 'text/plain'});
-   
-  	// Send the response body as "Hello World"
-	response.end('Hello World\n');
-
-}).listen(8081);
-
-console.log('Server running at http://127.0.0.1:8081/');
-
+// Initialize db connection
 var db = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
 	host: process.env.DB_HOST,
 	dialect: process.env.DB_TYPE
 });
 
+var Users = db.define('users', {
+  ID: {
+    type: Sequelize.STRING,
+    primaryKey: true
+  },
+  username: {
+    type: Sequelize.STRING
+  },
+  skills: {
+    type: Sequelize.STRING
+  }
+}, {
+  tableName: 'users'
+});
+
+Users.sync();
+
+http.createServer(function (request, response) {
+	getPost(request, function(post) {
+		console.log('Request received\nUser: ' + post.user_name + '\nID: ' + post.user_id);
+		Users.findOrCreate({where: {ID: post.user_id}, defaults: {ID: post.user_id, username: post.user_name, skills: ''} })
+			.spread(function(user, created) {
+				console.log(user.get({
+      				plain: true
+    				}));
+    				console.log(created);
+			});
+		queryDB(post, function(result) {
+			// Send the HTTP header
+        		// HTTP Status: 200 : OK
+        		// Content Type: text/plain
+        		response.writeHead(200, {'Content-Type': 'text/plain'});
+
+        		// Send the response body as "Hello World"
+        		response.end(result);			
+		});
+	});
+}).listen(process.env.PORT);
+
+console.log('Server running at http://127.0.0.1:8081/');
+
+function queryDB(data, callback) {
+	//var username = data.user_name;
+	//var userid = data.user_id;
+	//var skills = data.text;
+	var command = data.command;
+	var token = data.token;
+
+	// Verify command and access token
+	if (!((command === '/iknow' && token === process.env.SLACK_IKNOW_TOKEN) ||
+	    (command === '/whoknows' && token === process.env.SLACK_WHOKNOWS_TOKEN))) {
+		callback('There is an error in your slack app configuration. Go to your app settings by ' +
+		       'clicking on the skillzbot username and make sure your commands and access tokens are correct.');
+	} else {
+		// /iknow command logic
+		if (command === '/iknow') {
+			callback('@smona is hard on the case! Go bug me to fix skillzbot :P');
+		// /whoknows command logic
+		} else {
+			
+		}
+	}
+
+}
 
 function getPost(request, callback) {
         var body = '';
@@ -44,35 +93,12 @@ function getPost(request, callback) {
 	    callback(post);
         });
 }
+
+function iknow(id, skills) {
+	
+}
 /*
-	$user = $_POST['user_name'];
-	$userid = $_POST['user_id'];
-	$skills = $_POST['text'];
 	$newskills = strtolower($skills);
-	$command = $_POST['command'];
-	$token = $_POST['token'];
-	if ($command == "/whoknows") {
-		$validtoken = 'REDACTED';
-	} elseif ($command == "/iknow") {
-		$validtoken = 'REDACTED';
-	} else {
-		echo "invalid command";
-	}
-	// Verify token
-
-	if($token != $validtoken){
-	    $msg = "The token for the slash command doesn't match. Check your script.";
-	    die($msg);
-	    echo $msg;
-	}
-
-
-	// Create connection
-	$conn = new mysqli($servername, $username, $password, $dbname);
-	// Check connection
-	if ($conn->connect_error) {
-	    die("Connection failed: " . $conn->connect_error);
-	}
 
 	// iknow command
 	if ($command == '/iknow') {
