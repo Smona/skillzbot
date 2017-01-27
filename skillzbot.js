@@ -1,7 +1,23 @@
+var http = require('http');
+var qs = require('querystring');
 var Sequelize = require('sequelize');
 
 // Load Environment configurations
 require('dotenv').config();
+
+http.createServer(function (request, response) {
+   	// Send the HTTP header 
+	// HTTP Status: 200 : OK
+   	// Content Type: text/plain
+   	response.writeHead(200, {'Content-Type': 'text/plain'});
+   
+  	// Send the response body as "Hello World"
+	response.end('Hello World\n');
+
+	console.log('Request received');
+}).listen(8081);
+
+console.log('Server running at http://127.0.0.1:8081/');
 
 var db = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
 	host: process.env.DB_HOST,
