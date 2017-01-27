@@ -4,7 +4,8 @@
   "description": "A bot that integrates with your Slack team and keeps track of who knows what.",
   "main": "skillzbot.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node skillzbot.js"
   },
   "repository": {
     "type": "git",
