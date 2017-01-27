@@ -6,6 +6,9 @@ var Sequelize = require('sequelize');
 require('dotenv').config();
 
 http.createServer(function (request, response) {
+	var post = getPost(request, function(post) {
+		console.log('Request received\nUser: ' + post.user_name + '\nID: ' + post.user_id);
+	});
    	// Send the HTTP header 
 	// HTTP Status: 200 : OK
    	// Content Type: text/plain
@@ -14,7 +17,6 @@ http.createServer(function (request, response) {
   	// Send the response body as "Hello World"
 	response.end('Hello World\n');
 
-	console.log('Request received');
 }).listen(8081);
 
 console.log('Server running at http://127.0.0.1:8081/');
@@ -24,6 +26,24 @@ var db = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_
 	dialect: process.env.DB_TYPE
 });
 
+
+function getPost(request, callback) {
+        var body = '';
+
+        request.on('data', function (data) {
+            body += data;
+
+            // Too much POST data, kill the connection!
+            // 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
+            if (body.length > 1e6)
+                request.connection.destroy();
+        });
+
+        request.on('end', function () {
+            var post = qs.parse(body);
+	    callback(post);
+        });
+}
 /*
 	$user = $_POST['user_name'];
 	$userid = $_POST['user_id'];
