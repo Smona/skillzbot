@@ -1,1 +1,4 @@
 node_modules
+
+# Ignore environment-specific configs
+.env
