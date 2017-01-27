@@ -48,7 +48,7 @@ console.log('Server running at http://127.0.0.1:8081/');
 function queryDB(data, callback) {
 	//var username = data.user_name;
 	//var userid = data.user_id;
-	var skills = data.text;
+	var skills = data.text.toLowerCase().trim();
 	var command = data.command;
 	var token = data.token;
 
@@ -61,9 +61,9 @@ function queryDB(data, callback) {
 		
 		// Verify command and access token
 		if (command === '/iknow' && token === process.env.SLACK_IKNOW_TOKEN) {
-			iknow(user, skills);
+			iknow(user, skills, callback);
 		} else if (command === '/whoknows' && token === process.env.SLACK_WHOKNOWS_TOKEN) {
-			whoknows(skills);
+			whoknows(skills, callback);
 		} else {
 			callback('There is an error in your slack app configuration. Go to your app settings by ' +
 						'clicking on the skillzbot username and make sure your commands and access tokens are correct.');			
@@ -71,16 +71,17 @@ function queryDB(data, callback) {
 	});
 }
 
-function iknow(user, skills) {
+function iknow(user, newskills, callback) {
 	console.log('iknow command runs...');
+	if (newskills === '') {
+		callback(user.skills);
+	}
 }
 
-function whoknows(skills) {
+function whoknows(skills, callback) {
 	console.log('whoknows command runs...');
 }
 /*
-	$newskills = strtolower($skills);
-
 	// iknow command
 	if ($command == '/iknow') {
 		$result = $conn->query("SELECT skills FROM devs WHERE ID='$userid'");
@@ -166,9 +167,4 @@ function whoknows(skills) {
 			}
 		}
 	}
-
-	$result->close();
-
-	$conn->close();
- ?>
 */
