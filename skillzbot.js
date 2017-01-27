@@ -52,7 +52,7 @@ function queryDB(data, callback) {
 	var command = data.command;
 	var token = data.token;
 
-	Users.findOrCreate({where: {ID: post.user_id}, defaults: {ID: post.user_id, username: post.user_name, skills: ''} })
+	Users.findOrCreate({where: {ID: data.user_id}, defaults: {ID: data.user_id, username: data.user_name, skills: ''} })
 	.spread(function(user, created) {
 		console.log(user.get({
 			plain: true
