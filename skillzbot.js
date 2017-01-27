@@ -73,8 +73,16 @@ function queryDB(data, callback) {
 
 function iknow(user, newskills, callback) {
 	console.log('iknow command runs...');
+	// User is viewing their skills
 	if (newskills === '') {
-		callback(user.skills);
+		if (user.skills === '') {
+			callback('_You have no skillz!_ Or more likely, you haven\'t added them yet.\n' +
+				'Run /iknow followed by a space-separated list of skills you have.');
+		} else {
+				callback('*The things you\'re good at:*\n' +
+				user.skills.replace(' ', '\n') +
+				'\n*Add more terms your comrades might search for;* don\'t miss an opportunity to support the Revolution!'); 
+		}
 	}
 }
 
@@ -84,14 +92,6 @@ function whoknows(skills, callback) {
 /*
 	// iknow command
 	if ($command == '/iknow') {
-		$result = $conn->query("SELECT skills FROM devs WHERE ID='$userid'");
-		if ($result->num_rows > 1) {
-			die("Oops! You have duplicate entries. Please contact <@smona>.");
-		} elseif ($result->num_rows == 1) {
-			$oldskills = $result->fetch_row()[0];
-		} else {
-			$oldskills = FALSE;
-		}
 		// User is viewing skills
 		if (chop($skills) == "") {
 			if ($oldskills != FALSE) {
