@@ -1,5 +1,4 @@
 var http = require('http');
-var qs = require('querystring');
 var Sequelize = require('sequelize');
 var util = require('./lib/util');
 
