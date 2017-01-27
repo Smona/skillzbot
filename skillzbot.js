@@ -1,6 +1,7 @@
 var http = require('http');
 var qs = require('querystring');
 var Sequelize = require('sequelize');
+var util = require('./lib/util');
 
 // Load Environment configurations
 require('dotenv').config();
@@ -29,23 +30,16 @@ var Users = db.define('users', {
 Users.sync();
 
 http.createServer(function (request, response) {
-	getPost(request, function(post) {
+	util.getPost(request, function(post) {
 		console.log('Request received\nUser: ' + post.user_name + '\nID: ' + post.user_id);
-		Users.findOrCreate({where: {ID: post.user_id}, defaults: {ID: post.user_id, username: post.user_name, skills: ''} })
-			.spread(function(user, created) {
-				console.log(user.get({
-      				plain: true
-    				}));
-    				console.log(created);
-			});
 		queryDB(post, function(result) {
 			// Send the HTTP header
-        		// HTTP Status: 200 : OK
-        		// Content Type: text/plain
-        		response.writeHead(200, {'Content-Type': 'text/plain'});
+			// HTTP Status: 200 : OK
+			// Content Type: text/plain
+			response.writeHead(200, {'Content-Type': 'text/plain'});
 
-        		// Send the response body as "Hello World"
-        		response.end(result);			
+			// Send the response body as "Hello World"
+			response.end(result);			
 		});
 	});
 }).listen(process.env.PORT);
@@ -55,47 +49,35 @@ console.log('Server running at http://127.0.0.1:8081/');
 function queryDB(data, callback) {
 	//var username = data.user_name;
 	//var userid = data.user_id;
-	//var skills = data.text;
+	var skills = data.text;
 	var command = data.command;
 	var token = data.token;
 
-	// Verify command and access token
-	if (!((command === '/iknow' && token === process.env.SLACK_IKNOW_TOKEN) ||
-	    (command === '/whoknows' && token === process.env.SLACK_WHOKNOWS_TOKEN))) {
-		callback('There is an error in your slack app configuration. Go to your app settings by ' +
-		       'clicking on the skillzbot username and make sure your commands and access tokens are correct.');
-	} else {
-		// /iknow command logic
-		if (command === '/iknow') {
-			callback('@smona is hard on the case! Go bug me to fix skillzbot :P');
-		// /whoknows command logic
+	Users.findOrCreate({where: {ID: post.user_id}, defaults: {ID: post.user_id, username: post.user_name, skills: ''} })
+	.spread(function(user, created) {
+		console.log(user.get({
+			plain: true
+		}));
+		console.log(created);
+		
+		// Verify command and access token
+		if (command === '/iknow' && token === process.env.SLACK_IKNOW_TOKEN) {
+			iknow(user, skills);
+		} else if (command === '/whoknows' && token === process.env.SLACK_WHOKNOWS_TOKEN) {
+			whoknows(skills);
 		} else {
-			
+			callback('There is an error in your slack app configuration. Go to your app settings by ' +
+						'clicking on the skillzbot username and make sure your commands and access tokens are correct.');			
 		}
-	}
-
+	});
 }
 
-function getPost(request, callback) {
-        var body = '';
-
-        request.on('data', function (data) {
-            body += data;
-
-            // Too much POST data, kill the connection!
-            // 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
-            if (body.length > 1e6)
-                request.connection.destroy();
-        });
-
-        request.on('end', function () {
-            var post = qs.parse(body);
-	    callback(post);
-        });
+function iknow(user, skills) {
+	console.log('iknow command runs...');
 }
 
-function iknow(id, skills) {
-	
+function whoknows(skills) {
+	console.log('whoknows command runs...');
 }
 /*
 	$newskills = strtolower($skills);
