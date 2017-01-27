@@ -1,5 +1,12 @@
+var Sequelize = require('sequelize');
+
 // Load Environment configurations
 require('dotenv').config();
+
+var db = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
+	host: process.env.DB_HOST,
+	dialect: process.env.DB_TYPE
+});
 
 /*
 	$user = $_POST['user_name'];
