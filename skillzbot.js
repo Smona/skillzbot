@@ -1,6 +1,8 @@
 var http = require('http');
 var Sequelize = require('sequelize');
 var util = require('./lib/util');
+var iknow = require('./lib/iknow');
+var whoknows = require('./lib/whoknows');
 
 // Load Environment configurations
 require('dotenv').config();
@@ -57,7 +59,7 @@ function queryDB(data, callback) {
 		console.log(user.get({
 			plain: true
 		}));
-		console.log(created);
+		console.log('created user entry: ' + created);
 		
 		// Verify command and access token
 		if (command === '/iknow' && token === process.env.SLACK_IKNOW_TOKEN) {
@@ -71,83 +73,7 @@ function queryDB(data, callback) {
 	});
 }
 
-function iknow(user, newskills, callback) {
-	console.log('iknow command runs...');
-	// User is viewing their skills
-	if (newskills === '') {
-		if (user.skills === '') {
-			callback('_You have no skillz!_ Or more likely, you haven\'t added them yet.\n' +
-				'Run /iknow followed by a space-separated list of skills you have.');
-		} else {
-				callback('*The things you\'re good at:*\n' +
-				user.skills.replace(/ /g, '\n') +
-				'\n*Add more terms your comrades might search for;* don\'t miss an opportunity to support the Revolution!'); 
-		}
-	} else {
-	// User is adding new skills
-		// Merge skill lists
-		newskills = newskills.split(' ');
-		oldskills = user.skills.split(' ');
-		newskills.forEach(function(skill, index) {
-			if (oldskills.indexOf(skill) === -1) {
-				oldskills.push(skill);
-			} else {
-				newskills.splice(index, 1);
-			}
-		});
-		updatedSkills = oldskills.sort().join(' ');
-
-		// Update the database entry
-		user.update({ skills: updatedSkills }).then(function() {
-			console.log('Added skills to ' + user.username + ': ' + ((newskills.length == 0) ? 'none' : newskills));
-			callback('*New skillz!* You now know:\n' + updatedSkills.replace(/ /g, '\n') +
-			'\n*Add more terms your comrades might search for;* don\'t miss an opportunity to support the Revolution!');
-		});
-	}
-}
-
-function whoknows(skills, callback) {
-	console.log('whoknows command runs...');
-}
 /*
-	// iknow command
-	if ($command == '/iknow') {
-		// User is modifying skillz
-		} else {
-			// User already had skillz
-			if ($oldskills != FALSE) {
-				$oldskills = explode(" ", $oldskills);
-				$newskills = explode(" ", $newskills);
-				foreach ($newskills as &$skill) {
-					$skill = trim($skill);
-				}
-				$updatedskills = array_merge($oldskills, $newskills);
-				$updatedskills = array_unique($updatedskills);
-				$updatedskills = implode(" ", $updatedskills);
-				$sql = "UPDATE devs
-				SET skills='$updatedskills'
-				WHERE ID='$userid'";
-
-				if ($conn->query($sql) === TRUE) {
-			    	echo "*New skillz!* You now know:\n" . str_replace(" ", "\n", $updatedskills);
-				} else {
-				    echo "Error: " . $sql . "<br>" . $conn->error;
-				}
-			// User didn't previously have skillz
-			} else {
-				$sql = "INSERT INTO devs (ID, username, skills)
-				VALUES ('$userid', '$user', '$newskills')";
-
-				if ($conn->query($sql) === TRUE) {
-			    	echo "*New skillz!* You now know:\n" . str_replace(" ", "\n", $newskills);
-						echo "\n*Add more terms your comrades might search for;* don't miss an opportunity to support the Revolution!" ;
-				} else {
-				    echo "Error: " . $sql . "<br>" . $conn->error;
-				}
-			}
-		}
-	}
-
 	if ($command == '/whoknows') {
 
 		if (chop($skills) == "") {
