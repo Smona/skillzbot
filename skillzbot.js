@@ -73,32 +73,3 @@ function queryDB(data, callback) {
 	});
 }
 
-/*
-	if ($command == '/whoknows') {
-
-			$newskills = explode(" ", $newskills);
-			foreach ($newskills as &$skill) {
-				$skill = trim($skill);
-				$users[$skill] = [];
-			}
-
-			$result = $conn->query("SELECT * FROM devs WHERE 1");
-			while ($row = $result->fetch_assoc()) {
-				foreach ($users as $skill => &$people) {
-					if (gettype(strpos($row["skills"], $skill)) == "integer") {
-						array_push($people, "<@" . $row["username"] . ">");
-					}
-				}
-			}
-			foreach ($users as $skill => &$people) {
-				if (count($people) == 0) {
-					echo ":slightly_frowning_face: *Sorry,* didn't find anyone who knows $skill. ";
-					echo "If you find them, tell them to run /iknow!\n";
-				} else {
-					echo ":celebrate: *Woo!* These volunteers know $skill:\n";
-					echo implode(", ", $people) . "\n";
-				}
-			}
-		}
-	}
-*/
