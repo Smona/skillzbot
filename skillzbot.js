@@ -83,6 +83,26 @@ function iknow(user, newskills, callback) {
 				user.skills.replace(/ /g, '\n') +
 				'\n*Add more terms your comrades might search for;* don\'t miss an opportunity to support the Revolution!'); 
 		}
+	} else {
+	// User is adding new skills
+		// Merge skill lists
+		newskills = newskills.split(' ');
+		oldskills = user.skills.split(' ');
+		newskills.forEach(function(skill, index) {
+			if (oldskills.indexOf(skill) === -1) {
+				oldskills.push(skill);
+			} else {
+				newskills.splice(index, 1);
+			}
+		});
+		updatedSkills = oldskills.sort().join(' ');
+
+		// Update the database entry
+		user.update({ skills: updatedSkills }).then(function() {
+			console.log('Added skills to ' + user.username + ': ' + ((newskills.length == 0) ? 'none' : newskills));
+			callback('*New skillz!* You now know:\n' + updatedSkills.replace(/ /g, '\n') +
+			'\n*Add more terms your comrades might search for;* don\'t miss an opportunity to support the Revolution!');
+		});
 	}
 }
 
@@ -92,15 +112,6 @@ function whoknows(skills, callback) {
 /*
 	// iknow command
 	if ($command == '/iknow') {
-		// User is viewing skills
-		if (chop($skills) == "") {
-			if ($oldskills != FALSE) {
-				echo "*The things you're good at:*\n" . str_replace(" ", "\n", $oldskills);
-				echo "\n*Add more terms your comrades might search for;* don't miss an opportunity to support the Revolution!" ;
-			} else {
-				echo "_You have no skillz!_ Or more likely, you haven't added them. ";
-				echo "Run /iknow followed by a space-separated list of skills you have.";
-			}
 		// User is modifying skillz
 		} else {
 			// User already had skillz
