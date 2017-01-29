@@ -65,7 +65,7 @@ function queryDB(data, callback) {
 		if (command === '/iknow' && token === process.env.SLACK_IKNOW_TOKEN) {
 			iknow(user, skills, callback);
 		} else if (command === '/whoknows' && token === process.env.SLACK_WHOKNOWS_TOKEN) {
-			whoknows(skills, callback);
+			whoknows(Users, skills, callback);
 		} else {
 			callback('There is an error in your slack app configuration. Go to your app settings by ' +
 						'clicking on the skillzbot username and make sure your commands and access tokens are correct.');			
@@ -76,9 +76,6 @@ function queryDB(data, callback) {
 /*
 	if ($command == '/whoknows') {
 
-		if (chop($skills) == "") {
-			echo "List some skillz to match revolutionaries who know them";
-		} else {
 			$newskills = explode(" ", $newskills);
 			foreach ($newskills as &$skill) {
 				$skill = trim($skill);
